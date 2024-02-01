@@ -1,3 +1,4 @@
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
@@ -8,30 +9,38 @@ import Link from "next/link";
 
 const questions = [
 	{
-		_id: 1,
+		_id: "1",
 		title: "Test question 1",
 		tags: [
-			{ _id: 1, name: "python" },
-			{ _id: 2, name: "sql" },
+			{ _id: "1", name: "python" },
+			{ _id: "2", name: "sql" },
 		],
-		author: "John Doe",
+		author: {
+			_id: "a1",
+			name: "John Doe",
+			picture: "https://example.com/picture1.jpg",
+		},
 		upvotes: 10,
-		views: 100,
-		answers: 2,
-		createdAt: "2021-09-01T12:00:00.000Z",
+		views: 1000000,
+		answers: [{}, {}], // Array of objects, replaced '2' with two empty objects
+		createdAt: new Date("2021-09-01T12:00:00.000Z"),
 	},
 	{
-		_id: 2,
+		_id: "2",
 		title: "Test question 2",
 		tags: [
-			{ _id: 1, name: "react" },
-			{ _id: 2, name: "sql" },
+			{ _id: "1", name: "react" },
+			{ _id: "2", name: "sql" },
 		],
-		author: "John Doe",
+		author: {
+			_id: "a2",
+			name: "John Doe",
+			picture: "https://example.com/picture2.jpg",
+		},
 		upvotes: 10,
-		views: 100,
-		answers: 2,
-		createdAt: "2021-09-01T12:00:00.000Z",
+		views: 500552,
+		answers: [{}, {}], // Array of objects, replaced '2' with two empty objects
+		createdAt: new Date("2023-09-01T12:00:00.000Z"),
 	},
 ];
 
@@ -68,7 +77,19 @@ export default function Home() {
 
 			<div className="mt-10 flex w-full flex-col gap-6">
 				{questions.length > 0 ? (
-					questions.map((question) => "QuestionCard")
+					questions.map((question) => (
+						<QuestionCard
+							key={question._id}
+							_id={question._id}
+							title={question.title}
+							tags={question.tags}
+							author={question.author}
+							upvotes={question.upvotes}
+							views={question.views}
+							answers={question.answers}
+							createdAt={question.createdAt}
+						/>
+					))
 				) : (
 					<NoResult
 						title="There's no questions to show"
