@@ -19,12 +19,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
 const type: any = "create";
 
-const Question = () => {
+interface QuestionProps {
+	mongoUserId: string;
+}
+
+const Question = ({ mongoUserId }: QuestionProps) => {
 	const editorRef = useRef(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const router = useRouter();
+	const pathname = usePathname();
 
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -37,19 +46,29 @@ const Question = () => {
 	});
 
 	// 2. Define a submit handler.
-	function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+	async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
 		setIsSubmitting(true);
 
 		try {
 			// Make an async call to API -> create a question
 			// Contains all form data
+
+			await createQuestion({
+				title: values.title,
+				content: values.explanation,
+				tags: values.tags,
+				author: JSON.parse(mongoUserId),
+			});
+
 			// Navigate back home
+			router.push("/");
 		} catch (error) {
 		} finally {
 			setIsSubmitting(false);
 		}
 	}
 
+	// Handler function to add tags
 	const handleInputKeyDown = (
 		e: React.KeyboardEvent<HTMLInputElement>,
 		field: any
@@ -131,6 +150,8 @@ const Question = () => {
 										// @ts-ignore
 										editorRef.current = editor;
 									}}
+									onBlur={field.onBlur}
+									onEditorChange={(content) => field.onChange(content)}
 									initialValue=""
 									init={{
 										height: 350,
