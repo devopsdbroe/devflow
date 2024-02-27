@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
@@ -89,7 +90,7 @@ export async function POST(req: Request) {
 		return NextResponse.json({ message: "OK", user: mongoUser });
 	}
 
-	if (eventType == "user.deleted") {
+	if (eventType === "user.deleted") {
 		const { id } = evt.data;
 
 		const deletedUser = await deleteUser({
