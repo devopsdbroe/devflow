@@ -9,6 +9,7 @@ import { getJoinedDate } from "@/lib/utils";
 import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
+import AnswerTab from "@/components/shared/AnswerTab";
 
 const Page = async ({ params, searchParams }: URLProps) => {
 	const { userId: clerkId } = auth();
@@ -96,9 +97,19 @@ const Page = async ({ params, searchParams }: URLProps) => {
 						</TabsTrigger>
 					</TabsList>
 					<TabsContent value="top-posts">
-						<QuestionTab />
+						<QuestionTab
+							searchParams={searchParams}
+							userId={userInfo.user._id}
+							clerkId={clerkId}
+						/>
 					</TabsContent>
-					<TabsContent value="answers">AnswersTab</TabsContent>
+					<TabsContent value="answers">
+						<AnswerTab
+							searchParams={searchParams}
+							userId={userInfo.user._id}
+							clerkId={clerkId}
+						/>
+					</TabsContent>
 				</Tabs>
 			</div>
 		</>
