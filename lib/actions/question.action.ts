@@ -7,6 +7,7 @@ import Tag from "@/database/tags.model";
 import {
 	CreateQuestionParams,
 	DeleteQuestionParams,
+	EditQuestionParams,
 	GetQuestionByIdParams,
 	GetQuestionsParams,
 	QuestionVoteParams,
@@ -195,6 +196,32 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
 			{ questions: questionId },
 			{ $pull: { questions: questionId } }
 		);
+
+		revalidatePath(path);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+	try {
+		connectToDatabase();
+
+		const { questionId, title, content, path } = params;
+
+		// Find question to edit
+		const question = await Question.findById(questionId).populate("tags");
+
+		if (!question) {
+			throw new Error("Question not found");
+		}
+
+		// Update question fields
+		question.title = title;
+		question.content = content;
+
+		await question.save();
 
 		revalidatePath(path);
 	} catch (error) {
