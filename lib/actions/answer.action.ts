@@ -9,6 +9,7 @@ import {
 } from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
+import Interaction from "@/database/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
 	try {
@@ -120,6 +121,38 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
 		}
 
 		// TODO: Increment author's reputation
+
+		revalidatePath(path);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function deleteAnswer(params: DeleteAnswerParams) {
+	try {
+		connectToDatabase();
+
+		const { answerId, path } = params;
+
+		// Find the answer to be deleted
+		const answer = await Answer.findById({ _id: answerId });
+
+		if (!answer) {
+			throw new Error("Answer not found");
+		}
+
+		// Delete the answer
+		await answer.deleteOne({ _id: answerId });
+
+		// Update any questions associated with that answer
+		await Question.updateMany(
+			{ _id: answer.question },
+			{ $pull: { answers: answerId } }
+		);
+
+		// Delete any interactions that have the deleted answer ID
+		await Interaction.deleteMany({ answer: answerId });
 
 		revalidatePath(path);
 	} catch (error) {

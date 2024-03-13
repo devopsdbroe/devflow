@@ -6,12 +6,16 @@ import Question from "@/database/question.model";
 import Tag from "@/database/tags.model";
 import {
 	CreateQuestionParams,
+	DeleteQuestionParams,
+	EditQuestionParams,
 	GetQuestionByIdParams,
 	GetQuestionsParams,
 	QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
 	try {
@@ -164,6 +168,60 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
 		}
 
 		// TODO: Increment author's reputation
+
+		revalidatePath(path);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+	try {
+		connectToDatabase();
+
+		const { questionId, path } = params;
+
+		// Delete the question
+		await Question.deleteOne({ _id: questionId });
+
+		// Delete all answers associated with that question
+		await Answer.deleteMany({ question: questionId });
+
+		// Delete any interactions with the deleted question ID
+		await Interaction.deleteMany({ question: questionId });
+
+		// Update tags to no longer reference the deleted question
+		await Tag.updateMany(
+			{ questions: questionId },
+			{ $pull: { questions: questionId } }
+		);
+
+		revalidatePath(path);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+	try {
+		connectToDatabase();
+
+		const { questionId, title, content, path } = params;
+
+		// Find question to edit
+		const question = await Question.findById(questionId).populate("tags");
+
+		if (!question) {
+			throw new Error("Question not found");
+		}
+
+		// Update question fields
+		question.title = title;
+		question.content = content;
+
+		await question.save();
 
 		revalidatePath(path);
 	} catch (error) {
