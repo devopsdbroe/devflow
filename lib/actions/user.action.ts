@@ -122,6 +122,8 @@ export async function getAllUsers(params: GetAllUsersParams) {
 			case "top_contributors":
 				sortOptions = { reputation: -1 };
 				break;
+			default:
+				break;
 		}
 
 		const users = await User.find(query).sort(sortOptions);
@@ -201,6 +203,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 				break;
 			case "most_answered":
 				sortOptions = { answers: -1 };
+				break;
+			default:
 				break;
 		}
 
