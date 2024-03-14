@@ -12,7 +12,7 @@ interface AllAnswersProps {
 	userId: string;
 	totalAnswers: number;
 	page?: number;
-	filter?: number;
+	filter?: string;
 }
 
 const AllAnswers = async ({
@@ -24,6 +24,8 @@ const AllAnswers = async ({
 }: AllAnswersProps) => {
 	const result = await getAnswers({
 		questionId,
+		page: page ? +page : 1,
+		sortBy: filter,
 	});
 
 	return (
