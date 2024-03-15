@@ -42,7 +42,7 @@ const Pagination = ({ pageNumber, isNext }: PaginationProps) => {
 			</div>
 
 			<Button
-				disabled={isNext}
+				disabled={!isNext}
 				onClick={() => handleNavigation("next")}
 				className="light-border-2 btn flex min-h-[36px] items-center justify-center gap-2 border"
 			>
