@@ -6,16 +6,14 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import GlobalFilters from "./GlobalFilters";
+import { globalSearch } from "@/lib/actions/general.action";
+import { json } from "stream/consumers";
 
 const GlobalResult = () => {
 	const searchParams = useSearchParams();
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [result, setResult] = useState([
-		{ type: "question", id: 1, title: "Next.js question" },
-		{ type: "tag", id: 1, title: "Nextjs" },
-		{ type: "user", id: 1, title: "Daniel Broe" },
-	]);
+	const [result, setResult] = useState([]);
 
 	const global = searchParams.get("global");
 	const type = searchParams.get("type");
@@ -28,6 +26,9 @@ const GlobalResult = () => {
 
 			try {
 				// Fetching everything for global search
+				const res = await globalSearch({ query: global, type });
+
+				setResult(JSON.parse(res));
 			} catch (error) {
 				console.log(error);
 				throw error;
@@ -35,11 +36,26 @@ const GlobalResult = () => {
 				setIsLoading(false);
 			}
 		};
+
+		if (global) {
+			fetchResult();
+		}
 	}, [global, type]);
 
 	const renderlink = (type: string, id: string) => {
 		// Will reutrn URL for result links
-		return "/";
+		switch (type) {
+			case "question":
+				return `/question/${id}`;
+			case "answer":
+				return `/answer/${id}`;
+			case "user":
+				return `/profile/${id}`;
+			case "tag":
+				return `/tags/${id}`;
+			default:
+				return "/";
+		}
 	};
 
 	return (
@@ -64,7 +80,7 @@ const GlobalResult = () => {
 						{result.length > 0 ? (
 							result.map((item: any, index: number) => (
 								<Link
-									href={renderlink("type", "id")}
+									href={renderlink(item.type, item.id)}
 									key={item.type + item.id + index}
 									className="flex w-full cursor-pointer items-start gap-3 px-5 py-2.5 hover:bg-light-700/50 dark:bg-dark-500/50"
 								>
