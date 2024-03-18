@@ -22,6 +22,7 @@ import Image from "next/image";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
+import { toast } from "../ui/use-toast";
 
 interface QuestionProps {
 	type?: string;
@@ -80,6 +81,13 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
 				// Navigate back home
 				router.push("/");
 			}
+
+			return toast({
+				title: `Question ${
+					type === "Edit" ? "edited" : "created"
+				} successfully`,
+				variant: "default",
+			});
 		} catch (error) {
 		} finally {
 			setIsSubmitting(false);
