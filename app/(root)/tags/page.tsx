@@ -7,6 +7,13 @@ import { getAllTags } from "@/lib/actions/tag.actions";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Tags | DevFlow",
+	description: "Check out the topics that our members have been posting about.",
+};
+
 const Page = async ({ searchParams }: SearchParamsProps) => {
 	const result = await getAllTags({
 		searchQuery: searchParams.q,
