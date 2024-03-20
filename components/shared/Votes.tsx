@@ -11,6 +11,7 @@ import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { viewQuestion } from "@/lib/actions/interaction.action";
+import { toast } from "../ui/use-toast";
 
 interface VotesProps {
 	type: string;
@@ -42,12 +43,20 @@ const Votes = ({
 			questionId: JSON.parse(itemId),
 			path: pathname,
 		});
+
+		return toast({
+			title: `Question ${!hasSaved ? "saved" : "removed from saved posts"}`,
+			variant: !hasSaved ? "default" : "destructive",
+		});
 	};
 
 	const handleVote = async (action: string) => {
 		// Check to make sure user is logged in
 		if (!userId) {
-			return;
+			return toast({
+				title: "Please log in",
+				description: "You must be logged in to perform this action",
+			});
 		}
 
 		if (action === "upvote") {
@@ -69,8 +78,10 @@ const Votes = ({
 				});
 			}
 
-			// TODO: Show a toast message
-			return;
+			return toast({
+				title: `Upvote ${!hasUpvoted ? "successful" : "removed"}`,
+				variant: !hasUpvoted ? "default" : "destructive",
+			});
 		}
 
 		if (action === "downvote") {
@@ -92,8 +103,10 @@ const Votes = ({
 				});
 			}
 
-			// TODO: Show a toast message
-			return;
+			return toast({
+				title: `Downvote ${!hasUpvoted ? "successful" : "removed"}`,
+				variant: !hasDownvoted ? "default" : "destructive",
+			});
 		}
 	};
 
