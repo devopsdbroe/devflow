@@ -7,6 +7,14 @@ import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Community | DevFlow",
+	description:
+		"Find other members of DevFlow and see some of the topics they've been posting about.",
+};
+
 const Page = async ({ searchParams }: SearchParamsProps) => {
 	const result = await getAllUsers({
 		searchQuery: searchParams.q,
