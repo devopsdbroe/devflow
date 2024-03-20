@@ -104,7 +104,7 @@ const Votes = ({
 			}
 
 			return toast({
-				title: `Downvote ${!hasUpvoted ? "successful" : "removed"}`,
+				title: `Downvote ${!hasDownvoted ? "successful" : "removed"}`,
 				variant: !hasDownvoted ? "default" : "destructive",
 			});
 		}
