@@ -3,7 +3,6 @@ import { twMerge } from "tailwind-merge";
 import qs from "query-string";
 import { BADGE_CRITERIA } from "@/constants";
 import { BadgeCounts } from "@/types";
-import { M_PLUS_1 } from "next/font/google";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
