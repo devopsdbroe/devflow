@@ -23,6 +23,7 @@ const GlobalSearch = () => {
 			// @ts-ignore
 			if (
 				searchContainerRef.current &&
+				// @ts-ignore
 				!searchContainerRef.current.contains(e.target)
 			) {
 				setIsOpen(false);
