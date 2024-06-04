@@ -10,17 +10,18 @@ import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const page = async ({ params, searchParams }: any) => {
 	const result = await getQuestionById({ questionId: params.id });
 	const { userId: clerkId } = auth();
 
-	let mongoUser;
-
-	// Get user from DB based on Clerk ID
-	if (clerkId) {
-		mongoUser = await getUserById({ userId: clerkId });
+	// If user is not signed in, redirect to sign-in page
+	if (!clerkId) {
+		redirect("/sign-in");
 	}
+
+	const mongoUser = await getUserById({ userId: clerkId });
 
 	return (
 		<>
