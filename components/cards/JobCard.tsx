@@ -20,7 +20,7 @@ const JobLocation = ({
 	return (
 		<div className="background-light800_dark400 flex items-center justify-end gap-2 rounded-2xl px-3 py-1.5">
 			<Image
-				src={`https://flagapi.com/${job_country}/flat/64.png`}
+				src={`https://flagsapi.com/${job_country}/flat/64.png`}
 				alt="country symbol"
 				width={16}
 				height={16}
